@@ -148,7 +148,7 @@ impl Adler32 {
   }
 
   // Inspired by https://github.com/remram44/adler32-rs
-  /// Undo the `byte` that was given `size` bytes before
+  /// Undo the `byte` that was given `size` bytes before, beware: does not use SIMD optimization
   pub fn remove(&mut self, size: usize, byte: u8) {
     const MOD: u16 = 65521;
     let byte = byte as u16;
