@@ -147,6 +147,17 @@ impl Adler32 {
     (u32::from(self.b) << 16) | u32::from(self.a)
   }
 
+  // Inspired by https://github.com/remram44/adler32-rs
+  /// Undo the `byte` that was given `size` bytes before
+  pub fn remove(&mut self, size: usize, byte: u8) {
+    const MOD: u16 = 65521;
+    let byte = byte as u16;
+    self.a = (self.a + MOD - byte) % MOD;
+    self.b = ((self.b + MOD - 1)
+      .wrapping_add(MOD.wrapping_sub(size as u16).wrapping_mul(byte)))
+      % MOD;
+  }
+
   /// Resets the internal state.
   pub fn reset(&mut self) {
     self.a = 1;
