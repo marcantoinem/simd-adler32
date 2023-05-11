@@ -150,12 +150,12 @@ impl Adler32 {
   // Inspired by https://github.com/remram44/adler32-rs
   /// Undo the `byte` that was given `size` bytes before, beware: does not use SIMD optimization
   pub fn remove(&mut self, size: usize, byte: u8) {
-    const MOD: u16 = 65521;
+    const MOD: u32 = 65521;
     let byte = byte as u16;
-    self.a = (self.a + MOD - byte) % MOD;
-    self.b = ((self.b + MOD - 1)
-      .wrapping_add(MOD.wrapping_sub(size as u16).wrapping_mul(byte)))
-      % MOD;
+    self.a = ((self.a as u32 + MOD - byte as u32) % MOD) as u16;
+    self.b = (((self.b as u32 + MOD - 1)
+      .wrapping_add(MOD.wrapping_sub(size as u32).wrapping_mul(byte as u32)))
+      % MOD) as u16;
   }
 
   /// Resets the internal state.
